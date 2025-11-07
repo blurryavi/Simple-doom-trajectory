@@ -1,45 +1,11 @@
 CREATE TABLE user_game (
-  user_id INT NOT NULL PRIMARY KEY,
-  age INT,
-  name VARCHAR(30),
-  gender VARCHAR(15)
+    user_id INT NOT NULL PRIMARY KEY,
+    age INT,
+    name VARCHAR(30),
+    gender VARCHAR(15)
 );
 
-CREATE TABLE player (
-  player_id INT NOT NULL PRIMARY KEY,
-  nickname VARCHAR(30),
-  session_id INT NOT NULL,
-  user_id INT,
-  FOREIGN KEY (user_id) REFERENCES user_game(user_id)
-);
-
-CREATE TABLE tic (
-  tic_id INT PRIMARY KEY,
-  game_id int,
-  time TIMESTAMP NOT NULL,
-  FOREIGN KEY(game_id) REFERENCES game(game_id)
-);
-
-CREATE TABLE telemetry (
-  telemetry_id INT NOT NULL PRIMARY KEY,
-  momentum NUMERIC(5,2),
-  x_axis NUMERIC(5,2),
-  y_axis NUMERIC(5,2),
-  z_axis NUMERIC(5,2),
-  health INT,
-  ammo INT,
-  armor INT,
-  tic_id INT,
-  FOREIGN KEY (tic_id) REFERENCES tic(tic_id)
-);
-
-CREATE TABLE game (
-  game_id INT NOT NULL PRIMARY KEY,
-  player_id INT NOT NULL,
-  started TIMESTAMP,
-  ended TIMESTAMP,
-  FOREIGN KEY (player_id) REFERENCES player(player_id)
-);
+-- Encuestas
 
 CREATE TABLE UXInstrument (
   instrument_id INT NOT NULL PRIMARY KEY,
@@ -70,6 +36,45 @@ CREATE TABLE Item_response (
   item_id INT NOT NULL,
   FOREIGN KEY (response_id) REFERENCES UXResponse(response_id),
   FOREIGN KEY (item_id) REFERENCES Item(item_id)
+);
+
+-- juego
+
+CREATE TABLE player (
+    player_id INT NOT NULL PRIMARY KEY,
+    nickname VARCHAR(30),
+    session_id INT NOT NULL,
+    user_id INT,
+    FOREIGN KEY (user_id) REFERENCES user_game(user_id)
+  );
+
+CREATE TABLE game (
+  game_id INT NOT NULL PRIMARY KEY,
+  player_id INT NOT NULL,
+  started TIMESTAMP,
+  ended TIMESTAMP,
+  FOREIGN KEY (player_id) REFERENCES player(player_id)
+);
+
+
+CREATE TABLE tic (
+  tic_id INT PRIMARY KEY,
+  game_id int,
+  time TIMESTAMP NOT NULL,
+  FOREIGN KEY(game_id) REFERENCES game(game_id)
+);
+
+CREATE TABLE telemetry (
+    telemetry_id INT NOT NULL PRIMARY KEY,
+    momentum NUMERIC(5,2),
+    x_axis NUMERIC(5,2),
+    y_axis NUMERIC(5,2),
+    z_axis NUMERIC(5,2),
+    health INT,
+    ammo INT,
+    armor INT,
+    tic_id INT,
+    FOREIGN KEY (tic_id) REFERENCES tic(tic_id)
 );
 
 CREATE TABLE Map (
