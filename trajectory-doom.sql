@@ -103,8 +103,15 @@ CREATE TABLE Sector (
 CREATE TABLE game_episode (
     game_episode_id SERIAL PRIMARY KEY,
     game_id INT REFERENCES game(game_id),
-    episode_id INT REFERENCES episode(episode_id),
-    map_id INT REFERENCES map(map_id)
+    started TIMESTAMP,
+    episode_id INT REFERENCES episode(episode_id)
+);
+
+CREATE TABLE episode_map (
+    episode_map_id SERIAL PRIMARY KEY,
+    map_id INT REFERENCES map(map_id),
+    started TIMESTAMP,
+    game_episode_id INT REFERENCES game_episode(game_episode_id)
 );
 
 -- Episodes
@@ -115,8 +122,7 @@ INSERT INTO Episode (episode_id, name) VALUES (4, 'Thy Flesh Consumed');
 
 -- Maps for Episode 1
 INSERT INTO Map (map_id, map_number, name, episode_id) VALUES (1, 1, 'Hangar', 1);
-INSERT INTO Map (map_id, map_number, name, episode_id) VALUES (2, 2, 'Nuclear Plant', 1);
-INSERT INTO Map (map_id, map_number, name, episode_id) VALUES (3, 3, 'Toxin Refinery', 1);
+INSERT INTO Map (map_id, map_number, name, episode_id) VALUES (2, 2, 'Nuclear Plant', 1); INSERT INTO Map (map_id, map_number, name, episode_id) VALUES (3, 3, 'Toxin Refinery', 1);
 INSERT INTO Map (map_id, map_number, name, episode_id) VALUES (4, 4, 'Command Control', 1);
 INSERT INTO Map (map_id, map_number, name, episode_id) VALUES (5, 5, 'Phobos Lab', 1);
 INSERT INTO Map (map_id, map_number, name, episode_id) VALUES (6, 6, 'Central Processing', 1);
@@ -156,3 +162,5 @@ INSERT INTO Map (map_id, map_number, name, episode_id) VALUES (33, 6, 'Against T
 INSERT INTO Map (map_id, map_number, name, episode_id) VALUES (34, 7, 'And Hell Followed', 4);
 INSERT INTO Map (map_id, map_number, name, episode_id) VALUES (35, 8, 'Unto The Cruel', 4);
 INSERT INTO Map (map_id, map_number, name, episode_id) VALUES (36, 9, 'Fear', 4);
+
+ALTER TABLE player ADD CONSTRAINT unique_nickname UNIQUE (nickname);
