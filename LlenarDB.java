@@ -18,6 +18,14 @@ public class LlenarDB {
 
     String filePath = args[0];
 
+    String path = filePath;
+
+    path = path.replace("\\", "/");
+
+    int slash = path.lastIndexOf('/');
+    int dot = path.lastIndexOf('.');
+
+
     if (args.length == 0) {
       System.out.println("Por favor, escriba el archivo del que quiere leer los datos");
     }
@@ -29,7 +37,7 @@ public class LlenarDB {
     }
 
     // El nombre de usuario es el archivo sin la extensión
-    String nickname = args[0].substring(0, args[0].lastIndexOf('.'));
+    String nickname = path.substring(slash + 1, dot);
 
     try {
 
@@ -285,24 +293,24 @@ public class LlenarDB {
     }
   }
 
-public static void assignSectorsToTelemetry(Connection conn) throws SQLException {
+  public static void assignSectorsToTelemetry(Connection conn) throws SQLException {
 
     String sql = """
-        UPDATE telemetry t
-        SET sector_id = s.sector_id
-        FROM tic tc
-        JOIN game g ON g.game_id = tc.game_id
-        JOIN game_episode ge ON ge.game_id = g.game_id
-        JOIN episode_map em ON em.game_episode_id = ge.game_episode_id
-        JOIN map m ON m.map_id = em.map_id
-        JOIN sector s ON s.map_id = m.map_id
-        WHERE t.tic_id = tc.tic_id
-          AND t.x_axis BETWEEN s.x_min AND s.x_max
-          AND t.y_axis BETWEEN s.y_min AND s.y_max;
-    """;
+            UPDATE telemetry t
+            SET sector_id = s.sector_id
+            FROM tic tc
+            JOIN game g ON g.game_id = tc.game_id
+            JOIN game_episode ge ON ge.game_id = g.game_id
+            JOIN episode_map em ON em.game_episode_id = ge.game_episode_id
+            JOIN map m ON m.map_id = em.map_id
+            JOIN sector s ON s.map_id = m.map_id
+            WHERE t.tic_id = tc.tic_id
+              AND t.x_axis BETWEEN s.x_min AND s.x_max
+              AND t.y_axis BETWEEN s.y_min AND s.y_max;
+        """;
 
     try (PreparedStatement ps = conn.prepareStatement(sql)) {
-        ps.executeUpdate();
+      ps.executeUpdate();
     }
   }
 }
