@@ -61,20 +61,6 @@ CREATE TABLE IF NOT EXISTS tic (
     CONSTRAINT fk_tic_game FOREIGN KEY (game_id) REFERENCES game(game_id)
 );
 
-CREATE TABLE IF NOT EXISTS telemetry (
-    telemetry_id SERIAL PRIMARY KEY,
-    x_axis INT,
-    y_axis INT,
-    z_axis INT,
-    angle INT,
-    momx NUMERIC(7,2),
-    momy INT,
-    health INT,
-    ammo INT,
-    armor INT,
-    tic_id INT,
-    CONSTRAINT fk_telemetry_tic FOREIGN KEY (tic_id) REFERENCES tic(tic_id)
-);
 
 CREATE TABLE IF NOT EXISTS episode (
     episode_id INT PRIMARY KEY,
@@ -89,11 +75,32 @@ CREATE TABLE IF NOT EXISTS map (
     CONSTRAINT fk_map_episode FOREIGN KEY (episode_id) REFERENCES episode(episode_id)
 );
 
+-- a tic is tied to a specific map
+
 CREATE TABLE IF NOT EXISTS sector (
     sector_id SERIAL PRIMARY KEY,
-    name VARCHAR(100),
-    episode_id INT,
-    CONSTRAINT fk_sector_episode FOREIGN KEY (episode_id) REFERENCES episode(episode_id)
+    map_id INT NOT NULL REFERENCES map(map_id),
+    sx INT NOT NULL,
+    sy INT NOT NULL,
+    x_min INT NOT NULL,
+    x_max INT NOT NULL,
+    y_min INT NOT NULL,
+    y_max INT NOT NULL,
+    CONSTRAINT uq_sector_map_sx_sy UNIQUE (map_id, sx, sy)
+);
+
+CREATE TABLE IF NOT EXISTS telemetry (
+    telemetry_id SERIAL PRIMARY KEY,
+    x_axis INT,
+    y_axis INT,
+    z_axis INT,
+    angle INT,
+    momx NUMERIC(7,2),
+    momy INT,
+    tic_id INT,
+    sector_id INT,
+    CONSTRAINT fk_telemetry_tic FOREIGN KEY (tic_id) REFERENCES tic(tic_id),
+    CONSTRAINT fk_sector_id FOREIGN KEY (sector_id) REFERENCES sector(sector_id)
 );
 
 CREATE TABLE IF NOT EXISTS game_episode (
@@ -185,7 +192,8 @@ INSERT INTO user_game (user_id, age, name, gender) VALUES
 (1, 18, 'Salome Avila Torres', 'Female'),
 (2, 19, 'Solon Losada', 'Male'),
 (3, 20, 'Mateo Traslaviña', 'Male'),
-(4, 20, 'Juan Pablo Peña', 'Male')
+(4, 20, 'Juan Pablo Peña', 'Male'),
+(5, 20, 'Alejando Martinez Mesa', 'Male')
 ON CONFLICT (user_id) DO NOTHING;
 
 INSERT INTO uxresponse (response_id, instrument_id, user_id) VALUES
@@ -259,11 +267,13 @@ INSERT INTO item_response (response, response_id, item_id) VALUES
 (7, 3, 18)
 ON CONFLICT ON CONSTRAINT uq_itemresponse_response_item DO NOTHING;
 
+
 INSERT INTO player (nickname, user_id) VALUES
 ('sal', 1),
 ('elpepe', 4),
 ('pepardo', 4),
-('solonlosada2006', 2)
+('solonlosada2006', 2),
+('pepardo2', 4),
+('alejandro3', 5),
+('pepito', 3)
 ON CONFLICT (nickname) DO NOTHING;
-
-
